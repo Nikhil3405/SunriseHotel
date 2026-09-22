@@ -1,0 +1,159 @@
+{
+  "hotel": {
+    "name": "Sunrise Hotel",
+    "location": {
+      "address": "45 MG Road",
+      "city": "Bengaluru",
+      "country": "India"
+    },
+    "description": "Sunrise Hotel is a modern city hotel in Bengaluru offering comfortable rooms, dining, business facilities and leisure amenities for both business and leisure travelers.",
+
+    "check_in": {
+      "time": "2:00 PM",
+      "early_check_in": "Subject to availability",
+      "early_check_in_fee": "May apply"
+    },
+
+    "check_out": {
+      "time": "11:00 AM",
+      "late_check_out": "Subject to availability",
+      "late_check_out_fee": "May apply"
+    },
+
+    "front_desk": {
+      "available": true,
+      "hours": "24 hours"
+    },
+
+    "amenities": [
+      {
+        "name": "Swimming Pool",
+        "available": true,
+        "type": "Outdoor",
+        "hours": "7:00 AM - 9:00 PM",
+        "details": "Infinity-style outdoor swimming pool."
+      },
+      {
+        "name": "Fitness Center",
+        "available": true,
+        "hours": "24 hours",
+        "details": "Gym with cardio and strength-training equipment."
+      },
+      {
+        "name": "Wi-Fi",
+        "available": true,
+        "details": "Complimentary Wi-Fi is available throughout the hotel."
+      },
+      {
+        "name": "Parking",
+        "available": true,
+        "details": "Complimentary parking is available for hotel guests.",
+        "reservation_required": false
+      },
+      {
+        "name": "Airport Shuttle",
+        "available": false,
+        "details": "The hotel does not currently operate an airport shuttle."
+      },
+      {
+        "name": "Business Center",
+        "available": true,
+        "hours": "6:00 AM - 10:00 PM",
+        "details": "Computers, printing and basic office facilities are available."
+      },
+      {
+        "name": "Laundry Service",
+        "available": true,
+        "hours": "8:00 AM - 8:00 PM",
+        "details": "Same-day laundry service is available for selected items."
+      },
+      {
+        "name": "Room Service",
+        "available": true,
+        "hours": "6:00 AM - 11:00 PM"
+      }
+    ],
+
+    "restaurants": [
+      {
+        "name": "The Sunrise Kitchen",
+        "type": "All-day dining",
+        "hours": "6:30 AM - 11:00 PM",
+        "cuisine": [
+          "Indian",
+          "Continental",
+          "Asian"
+        ]
+      },
+      {
+        "name": "Sky Lounge",
+        "type": "Rooftop lounge",
+        "hours": "5:00 PM - 11:30 PM",
+        "cuisine": [
+          "Light meals",
+          "Snacks"
+        ]
+      }
+    ],
+
+    "breakfast": {
+      "available": true,
+      "restaurant": "The Sunrise Kitchen",
+      "hours": "7:00 AM - 10:30 AM",
+      "type": "Buffet",
+      "price_for_non_included_rooms": 750,
+      "currency": "INR",
+      "details": "Breakfast includes a selection of Indian and continental dishes."
+    },
+
+    "policies": {
+      "cancellation": "Free cancellation up to 24 hours before check-in. Cancellations made within 24 hours of check-in may be charged for one night.",
+      "pets": "Pets are not allowed.",
+      "smoking": "Smoking is not permitted inside guest rooms or indoor public areas.",
+      "extra_bed": "Extra beds are subject to availability and additional charges.",
+      "children": "Children are welcome.",
+      "minimum_check_in_age": 18,
+      "identification": "A valid government-issued photo ID is required at check-in."
+    },
+
+    "accessibility": {
+      "wheelchair_accessible": true,
+      "accessible_rooms": true,
+      "details": "Selected rooms and common areas are wheelchair accessible."
+    },
+
+    "services": [
+      "24-hour front desk",
+      "Housekeeping",
+      "Laundry service",
+      "Room service",
+      "Luggage storage",
+      "Wake-up calls",
+      "Concierge assistance"
+    ],
+
+    "nearby_places": [
+      {
+        "name": "MG Road",
+        "distance": "1.2 km"
+      },
+      {
+        "name": "Cubbon Park",
+        "distance": "2.5 km"
+      },
+      {
+        "name": "Bengaluru Palace",
+        "distance": "4.8 km"
+      },
+      {
+        "name": "Kempegowda International Airport",
+        "distance": "35 km"
+      }
+    ],
+
+    "contact": {
+      "phone": "+91 80 4000 1234",
+      "email": "stay@sunrisehotel.example"
+    }
+  }
+}

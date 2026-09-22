@@ -1,0 +1,98 @@
+{
+  "rooms": [
+    {
+      "id": "standard",
+      "name": "Standard Room",
+      "description": "A comfortable room suitable for individual travelers and couples.",
+      "max_guests": 2,
+      "size_sq_m": 24,
+      "beds": "1 Queen Bed",
+      "view": "City View",
+      "price_per_night": 4500,
+      "currency": "INR",
+      "breakfast_included": false,
+      "amenities": [
+        "Wi-Fi",
+        "Air conditioning",
+        "Television",
+        "Mini refrigerator",
+        "Work desk",
+        "Tea and coffee maker",
+        "Bathroom toiletries"
+      ]
+    },
+    {
+      "id": "deluxe",
+      "name": "Deluxe Room",
+      "description": "A spacious room with a city view and additional sleeping space.",
+      "max_guests": 3,
+      "size_sq_m": 32,
+      "beds": "1 King Bed + 1 Sofa Bed",
+      "view": "City View",
+      "price_per_night": 6500,
+      "currency": "INR",
+      "breakfast_included": true,
+      "amenities": [
+        "Wi-Fi",
+        "Air conditioning",
+        "Smart Television",
+        "Mini refrigerator",
+        "Work desk",
+        "Tea and coffee maker",
+        "Bathroom toiletries",
+        "Bathrobe",
+        "Hair dryer"
+      ]
+    },
+    {
+      "id": "family-suite",
+      "name": "Family Suite",
+      "description": "A large suite designed for families and small groups.",
+      "max_guests": 5,
+      "size_sq_m": 52,
+      "beds": "1 King Bed + 2 Single Beds",
+      "view": "City View",
+      "price_per_night": 9500,
+      "currency": "INR",
+      "breakfast_included": true,
+      "amenities": [
+        "Wi-Fi",
+        "Air conditioning",
+        "Smart Television",
+        "Mini refrigerator",
+        "Living area",
+        "Dining table",
+        "Work desk",
+        "Tea and coffee maker",
+        "Bathroom toiletries",
+        "Bathrobe",
+        "Hair dryer"
+      ]
+    },
+    {
+      "id": "premium-suite",
+      "name": "Premium Suite",
+      "description": "A spacious premium suite with a separate living area and upgraded facilities.",
+      "max_guests": 4,
+      "size_sq_m": 65,
+      "beds": "1 King Bed + 1 Sofa Bed",
+      "view": "Panoramic City View",
+      "price_per_night": 12000,
+      "currency": "INR",
+      "breakfast_included": true,
+      "amenities": [
+        "Wi-Fi",
+        "Air conditioning",
+        "Smart Television",
+        "Mini refrigerator",
+        "Separate living room",
+        "Dining area",
+        "Work desk",
+        "Coffee machine",
+        "Premium toiletries",
+        "Bathrobe",
+        "Hair dryer"
+      ]
+    }
+  ]
+}
