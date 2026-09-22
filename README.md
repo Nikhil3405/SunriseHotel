@@ -1,259 +1,110 @@
 # Sunrise Hotel Guest Assistant
 
-An AI-powered hotel guest assistant that helps guests get information about Sunrise Hotel and check room availability through a simple conversational web interface.
+An AI-powered hotel guest assistant that helps guests get hotel information and check room availability through a conversational web interface.
 
 ## Live Demo
 
-🌐 **Frontend:**
-https://sunrise-hotel-co65.vercel.app/
+- **Frontend:** https://sunrise-hotel-co65.vercel.app/
+- **Backend:** https://sunrise-hotel-ten.vercel.app/
 
-🔗 **Backend:**
-https://sunrise-hotel-ten.vercel.app/
-
-> The frontend is deployed on Vercel and the FastAPI backend is deployed separately. The frontend communicates with the backend through the `/health` and `/api/chat` endpoints.
+The frontend is deployed on Vercel and communicates with the FastAPI backend through `/health` and `/api/chat`.
 
 ---
 
-# Overview
+## Overview
 
-Sunrise Hotel Guest Assistant is a full-stack AI application designed to help hotel guests quickly find information about:
+The assistant helps guests with:
 
-- Hotel amenities
-- Rooms and room features
+- Hotel amenities and services
+- Room information and suitability
 - Breakfast
 - Check-in and check-out
 - Hotel policies
-- Hotel services
-- Room suitability
 - Room availability
+- Follow-up questions
 
-The application combines an LLM for natural-language understanding and tool selection with deterministic Python business logic for hotel information and availability.
+Core design principle:
 
-The main design principle is:
+> **Use AI for natural-language understanding and tool selection, while keeping business-critical decisions deterministic.**
 
-> **Use AI for understanding and conversation, but keep business-critical decisions deterministic.**
+## Guest Journey
+
+```text
+Guest
+  ↓
+Next.js Chat UI
+  ↓
+FastAPI /api/chat
+  ↓
+Groq LLM
+  ↓
+Tool selection
+  ↓
+Python tool execution
+  ↓
+JSON hotel data
+  ↓
+Response
+  ↓
+Frontend
+```
+
+For availability:
+
+```text
+Guest request → LLM identifies intent → availability tool
+→ validate dates/guests → check every night → return rooms → room cards
+```
+
+The LLM does **not** decide whether a room is actually available.
 
 ---
 
-# Customer Problem
+## Features
 
-Hotel guests frequently have questions about rooms, amenities, policies, breakfast, and availability.
+### Conversational Assistant
 
-Instead of requiring guests to navigate through multiple hotel pages or wait for hotel staff, the assistant provides a conversational interface where guests can ask questions naturally.
-
-For example:
+Guests can ask natural-language questions such as:
 
 ```text
 What time is check-in?
-
 Does the hotel have a swimming pool?
-
-Which room is suitable for three guests?
-
-Is breakfast included in the Deluxe Room?
-
-Do you have rooms available from October 10 to October 12 for 3 guests?
-```
-
-The goal is to provide quick, useful answers while preventing the AI from inventing hotel information.
-
----
-
-# Guest Journey
-
-```text
-Guest opens the application
-        ↓
-Frontend checks backend health
-        ↓
-Guest asks a question
-        ↓
-Next.js sends question + conversation context
-        ↓
-FastAPI receives the request
-        ↓
-LLM understands the guest's intent
-        ↓
-LLM selects an appropriate tool
-        ↓
-Python backend executes the tool
-        ↓
-Tool retrieves authoritative hotel data
-        ↓
-LLM generates a natural-language response
-        ↓
-Frontend displays the response
-```
-
-For availability requests:
-
-```text
-Guest asks about availability
-        ↓
-LLM identifies availability intent
-        ↓
-Availability tool is called
-        ↓
-Python validates dates and guest count
-        ↓
-Python checks room inventory
-        ↓
-Structured availability result
-        ↓
-Backend formats the result
-        ↓
-Frontend displays available room cards
-```
-
-The LLM does **not** determine whether a room is actually available.
-
----
-
-# Features
-
-## Conversational Hotel Assistant
-
-Guests can ask natural-language questions about the hotel.
-
-Examples:
-
-```text
-What time is check-in?
-
-Does the hotel have a swimming pool?
-
 What restaurants are available?
-
 What is the cancellation policy?
-
 Is breakfast included in the Deluxe Room?
 ```
 
----
+### Room Information
 
-## Room Information
+The assistant provides room type, maximum guests, beds, size, price, breakfast inclusion, and room features.
 
-The assistant can provide information about:
+### Room Suitability
 
-- Room types
-- Maximum guests
-- Beds
-- Room size
-- Price
-- Breakfast inclusion
-- Room features
-
----
-
-## Room Suitability
-
-Guests can ask questions such as:
+Example:
 
 ```text
 Which room can accommodate 3 guests?
 ```
 
-The backend determines suitable rooms based on their configured guest capacity.
+The backend determines suitable rooms from configured capacity.
+
+### Availability
+
+Guests provide check-in date, check-out date, and guest count. The backend checks inventory for the complete stay and the frontend displays structured room cards.
+
+### Conversation Context
+
+Previous messages are sent to the backend so follow-ups can be understood.
+
+### UX and Error States
+
+The frontend includes loading states, backend connection states, API error handling, unsupported-information fallback, suggested questions, responsive layout, and an independent chat scroll area.
 
 ---
 
-## Room Availability
+## Technology Stack
 
-Guests can ask for availability for a specific:
-
-- Check-in date
-- Check-out date
-- Number of guests
-
-Example:
-
-```text
-Do you have a room available from October 10 to October 12 for 3 guests?
-```
-
-The backend checks the mock room inventory and returns rooms available for the complete requested stay.
-
-Availability results are displayed using structured room cards in the frontend.
-
----
-
-## Conversation Context
-
-The assistant supports follow-up questions.
-
-Example:
-
-```text
-User:
-Do you have rooms available from October 10 to October 12 for 3 guests?
-
-Assistant:
-Yes, several rooms are available...
-
-User:
-What about breakfast?
-
-Assistant:
-The available rooms include breakfast...
-```
-
-The previous conversation is sent to the backend so the assistant can understand follow-up questions.
-
----
-
-## Loading States
-
-The frontend displays a loading indicator while waiting for the assistant response.
-
----
-
-## Backend Connection State
-
-When the application first loads, the frontend checks the backend health endpoint.
-
-```text
-Connecting to Sunrise Hotel Assistant...
-        ↓
-Backend wakes up
-        ↓
-Health check succeeds
-        ↓
-Chat becomes available
-```
-
-This is particularly useful when the deployed backend is running on infrastructure that may temporarily sleep when idle.
-
----
-
-## Error Handling
-
-The application handles:
-
-- Backend connection failures
-- API failures
-- AI/model failures
-- Invalid requests
-- Unsupported hotel information
-
-The frontend displays user-friendly error messages rather than exposing internal server details.
-
----
-
-## Responsive Design
-
-The application is designed for:
-
-- Desktop
-- Tablet
-- Mobile
-
-The chat conversation has an independent scroll area while the header and input remain accessible.
-
----
-
-# Technology Stack
-
-## Frontend
+### Frontend
 
 - Next.js 16
 - React 19
@@ -263,21 +114,21 @@ The chat conversation has an independent scroll area while the header and input 
 - React Markdown
 - Remark GFM
 
-## Backend
+### Backend
 
 - Python
 - FastAPI
 - Pydantic
 - Pytest
 
-## AI
+### AI
 
 - Groq API
 - `openai/gpt-oss-120b`
 
-## Data
+### Data
 
-The hotel knowledge base is stored as JSON files:
+The hotel knowledge base is stored as JSON:
 
 ```text
 backend/app/data/
@@ -286,88 +137,57 @@ backend/app/data/
 └── availability.json
 ```
 
+JSON was chosen because the knowledge base is small and structured. A production system could replace it with a database or hotel/property management system.
+
 ---
 
-# Architecture
+## Architecture
 
 ```text
-                    ┌──────────────────────┐
-                    │        Guest         │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │   Next.js Frontend   │
-                    │                      │
-                    │  Chat UI             │
-                    │  Loading States      │
-                    │  Error States        │
-                    │  Room Cards          │
-                    └──────────┬───────────┘
-                               │
-                         HTTP / JSON
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │    FastAPI Backend   │
-                    │                      │
-                    │  Chat API            │
-                    │  Validation          │
-                    │  Conversation        │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │      Groq LLM        │
-                    │                      │
-                    │ Intent Understanding │
-                    │ Tool Selection       │
-                    │ Response Generation  │
-                    └──────────┬───────────┘
-                               │
-                         Tool Calls
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │     Python Tools     │
-                    │                      │
-                    │ hotel_info()         │
-                    │ room_info()          │
-                    │ suitable_rooms()     │
-                    │ availability()       │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │      JSON Data       │
-                    │                      │
-                    │ Hotel Information     │
-                    │ Room Information      │
-                    │ Availability         │
-                    └──────────────────────┘
+┌─────────────────────┐
+│        Guest        │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│   Next.js Frontend  │
+│ Chat / Loading / UI │
+└──────────┬──────────┘
+           │ HTTP / JSON
+           ↓
+┌─────────────────────┐
+│    FastAPI Backend  │
+│ API / Validation    │
+│ Conversation Context│
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│      Groq LLM       │
+│ Intent / Tool Select│
+│ Response Generation │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│    Python Tools     │
+│ hotel_info()        │
+│ room_info()         │
+│ suitable_rooms()    │
+│ availability()      │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│      JSON Data      │
+└─────────────────────┘
 ```
 
 ---
 
-# AI and Tool Calling
+## AI and Tool Calling
 
-The LLM is responsible for:
+The LLM is responsible for natural-language understanding, intent identification, tool selection, conversation context, and natural-language response generation.
 
-- Understanding natural-language guest questions
-- Identifying the user's intent
-- Selecting the appropriate tool
-- Understanding conversation context
-- Generating natural-language responses
+It is **not** responsible for directly accessing files, deciding room inventory, determining availability, or inventing hotel information.
 
-The LLM is **not** responsible for:
-
-- Directly accessing the database or files
-- Deciding room inventory
-- Determining room availability
-- Making business-critical availability decisions
-- Inventing hotel information
-
-The backend exposes four tools:
+Available tools:
 
 ```text
 hotel_info()
@@ -376,33 +196,23 @@ suitable_rooms(guests)
 availability(check_in, check_out, guests)
 ```
 
-The Python backend executes the selected tool and supplies its result to the application.
+The Python backend executes the selected tool and uses its result as authoritative data.
 
----
+### Why AI?
 
-# Why Use AI?
-
-Natural-language hotel questions can be expressed in many different ways.
-
-For example:
+Guests can express the same request in different ways:
 
 ```text
 Do you have anything for three people?
-
 Which room works for 3 guests?
-
 We are a group of three. What can we book?
 ```
 
-These questions have the same underlying intent.
-
-An LLM is useful for understanding this natural language and selecting the appropriate tool.
-
-However, once the required data has been identified, deterministic backend logic is used wherever possible.
+The LLM handles this natural-language understanding and maps the request to the appropriate backend operation.
 
 ---
 
-# Deterministic Availability Logic
+## Deterministic Availability
 
 Availability is intentionally handled outside the LLM.
 
@@ -416,135 +226,64 @@ Guests: 3
 
 The backend:
 
-1. Validates the dates.
+1. Validates dates and guest count.
 2. Generates every night in the requested stay.
-3. Filters rooms based on maximum guest capacity.
+3. Filters rooms by maximum guest capacity.
 4. Checks inventory for every requested night.
 5. Returns only rooms available for the complete stay.
 
-If a room is available on October 10 but unavailable on October 11, it is not returned as available for an October 10–12 stay.
+If a room is available on October 10 but unavailable on October 11, it is not returned for an October 10–12 stay.
 
-This makes availability deterministic and prevents the model from guessing.
+This makes availability deterministic and testable.
 
 ---
 
-# Hallucination Prevention
+## Hallucination Prevention
 
-Hotel information is treated as authoritative data.
-
-The assistant is instructed to:
+Hotel information is treated as authoritative data. The assistant is instructed to:
 
 - Use tools whenever hotel data is required.
-- Never invent hotel amenities.
-- Never invent room features.
-- Never invent prices.
-- Never invent hotel policies.
-- Never invent services.
-- Never invent availability.
+- Never invent amenities, room features, prices, policies, services, or availability.
 - Never contradict tool results.
 - Use room-specific tools for room-specific questions.
 - Use the availability tool for availability requests.
-- Avoid assuming that missing information means something is unavailable.
+- Avoid treating missing information as false.
 
-For example, if the hotel knowledge base contains no information about a helicopter service, the assistant should say that it does not have information about that service instead of claiming that the hotel does not provide it.
+The system distinguishes between **known false** and **information not available**.
 
-This distinction helps prevent unsupported claims.
-
----
-
-# Handling Missing Information
-
-The system distinguishes between:
-
-```text
-Known false
-```
-
-and:
-
-```text
-Information not available
-```
-
-For example, the hotel data explicitly contains:
-
-```text
-Airport shuttle:
-available = false
-```
-
-The assistant can therefore state that an airport shuttle is not available.
-
-However, if the hotel data contains no information about helicopter services, the assistant should respond that it does not have information about the service instead of assuming it is unavailable.
+For example, airport shuttle availability is explicitly stored as false, so the assistant can say it is unavailable. If helicopter transportation is not present in the data, the assistant should say it does not have information about the service instead of assuming it is unavailable.
 
 ---
 
-# Error and Failure Handling
+## Error Handling
 
-## Frontend Failure
+The application handles:
 
-If the frontend cannot connect to the backend:
+- Backend connection failures
+- API failures
+- AI/model failures
+- Invalid availability requests
+- Unsupported hotel information
 
-```text
-Unable to connect to the hotel assistant.
-Please try again.
-```
+The frontend shows user-friendly errors instead of internal server details. The chat remains disabled until the startup health check succeeds.
 
-The chat input remains disabled until the backend becomes available.
-
----
-
-## Backend API Failure
-
-If a chat request fails, the frontend displays a user-friendly error message.
-
-Internal server errors are not exposed to the guest.
-
----
-
-## LLM Failure
-
-If the AI service fails while processing a request, the backend handles the exception and returns an appropriate error response.
-
----
-
-## Invalid Availability Request
-
-The backend validates:
-
-- Check-in date
-- Check-out date
-- Guest count
-
-Invalid values are rejected before availability logic is executed.
-
----
-
-# Backend API
-
-## Health Check
+### Health Check
 
 ```http
 GET /health
 ```
 
-Example:
-
-```bash
-curl https://https://sunrise-hotel-ten.vercel.app/health
-```
-
 Response:
 
 ```json
-{
-  "status": "ok"
-}
+{"status":"ok"}
 ```
 
 ---
 
-## Chat
+## Backend API
+
+### Chat
 
 ```http
 POST /api/chat
@@ -562,15 +301,12 @@ Request:
 Example:
 
 ```bash
-curl -X POST https://https://sunrise-hotel-ten.vercel.app/api/chat \
+curl -X POST https://sunrise-hotel-ten.vercel.app/api/chat \
   -H "Content-Type: application/json" \
-  -d '{
-    "message": "What time is check-in?",
-    "conversation": []
-  }'
+  -d '{"message":"What time is check-in?","conversation":[]}'
 ```
 
-Example response:
+Response:
 
 ```json
 {
@@ -580,51 +316,22 @@ Example response:
 }
 ```
 
----
-
-## Availability Response
-
-Availability responses use structured data:
-
-```json
-{
-  "message": "Here are the rooms available for your stay.",
-  "type": "availability",
-  "data": {
-    "available": true,
-    "check_in": "2026-10-10",
-    "check_out": "2026-10-12",
-    "guests": 3,
-    "rooms": []
-  }
-}
-```
-
-The frontend uses this structured data to render room cards.
-
-This avoids relying on the LLM to format or reinterpret inventory information.
+Availability responses use structured data so the frontend can render room cards without relying on the LLM to reinterpret inventory.
 
 ---
 
-# Project Structure
+## Project Structure
 
 ```text
 hotel/
-│
 ├── backend/
-│   │
 │   ├── app/
-│   │   ├── api/
-│   │   │   └── chat.py
-│   │   │
+│   │   ├── api/chat.py
 │   │   ├── data/
 │   │   │   ├── hotel.json
 │   │   │   ├── rooms.json
 │   │   │   └── availability.json
-│   │   │
-│   │   ├── schemas/
-│   │   │   └── chat.py
-│   │   │
+│   │   ├── schemas/chat.py
 │   │   ├── services/
 │   │   │   ├── availability_service.py
 │   │   │   ├── chat_service.py
@@ -632,214 +339,86 @@ hotel/
 │   │   │   ├── llm_service.py
 │   │   │   ├── room_service.py
 │   │   │   └── tools.py
-│   │   │
 │   │   └── main.py
-│   │
 │   ├── tests/
 │   │   ├── test_availability.py
 │   │   ├── test_chat_api.py
 │   │   ├── test_edge_cases.py
 │   │   ├── test_llm.py
 │   │   └── test_room_service.py
-│   │
 │   ├── .env.example
 │   └── requirements.txt
-│
 ├── frontend/
-│   │
 │   ├── app/
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   │
 │   ├── components/
-│   │   ├── brand/
-│   │   │   └── SunriseLogo.tsx
-│   │   │
-│   │   └── chat/
-│   │       ├── Chat.tsx
-│   │       ├── ChatInput.tsx
-│   │       ├── MessageBubble.tsx
-│   │       ├── RoomCard.tsx
-│   │       └── SuggestedQuestions.tsx
-│   │
 │   ├── lib/
-│   │   └── api.ts
-│   │
 │   ├── types/
-│   │   └── chat.ts
-│   │
 │   ├── public/
-│   │   └── logo.svg
-│   │
 │   ├── .env.example
 │   └── package.json
-│
 └── README.md
 ```
 
 ---
 
-# Local Development
+## Local Development
 
-## Prerequisites
-
-Make sure the following are installed:
+### Prerequisites
 
 - Python 3.11+
-- Node.js
-- npm
+- Node.js and npm
 - Groq API key
 
----
-
-# Backend Setup
-
-Navigate to the backend:
+### Backend
 
 ```bash
 cd backend
-```
-
-Create a Python virtual environment:
-
-```bash
 python -m venv venv
 ```
 
-Activate it on Windows:
+Windows:
 
 ```powershell
 venv\Scripts\activate
 ```
 
-Install dependencies:
+Install and run:
 
 ```bash
 pip install -r requirements.txt
-```
-
-Create a `.env` file based on `.env.example`:
-
-```env
-GROQ_API_KEY=your_groq_api_key
-GROQ_MODEL=openai/gpt-oss-120b
-```
-
-Start the backend:
-
-```bash
 uvicorn app.main:app --reload
 ```
 
-The backend will be available at:
-
-```text
-http://localhost:8000
-```
-
-Health check:
-
-```text
-http://localhost:8000/health
-```
-
-FastAPI documentation:
-
-```text
-http://localhost:8000/docs
-```
-
----
-
-# Frontend Setup
-
-Navigate to the frontend:
-
-```bash
-cd frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Create `.env.local`:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-The frontend will be available at:
-
-```text
-http://localhost:3000
-```
-
----
-
-# Environment Variables
-
-## Backend
-
-Create:
-
-```text
-backend/.env
-```
-
-Example:
+Create `backend/.env`:
 
 ```env
 GROQ_API_KEY=your_groq_api_key
 GROQ_MODEL=openai/gpt-oss-120b
 ```
 
-A safe template is included in:
+Backend: `http://localhost:8000`
 
-```text
-backend/.env.example
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
----
-
-## Frontend
-
-Create:
-
-```text
-frontend/.env.local
-```
-
-For local development:
+Create `frontend/.env.local`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-A safe template is included in:
+Frontend: `http://localhost:3000`
 
-```text
-frontend/.env.example
-```
-
-The frontend environment variable contains only the backend URL and does not contain secrets.
-
-The Groq API key is kept exclusively on the backend.
+The Groq API key is kept exclusively on the backend. Only `.env.example` files are committed.
 
 ---
 
-# Testing
-
-The backend includes automated tests for important hotel, availability, API, edge-case, and LLM flows.
+## Testing
 
 Run:
 
@@ -853,21 +432,15 @@ Current result:
 19 passed, 2 warnings
 ```
 
-The two warnings are dependency deprecation warnings from the FastAPI/Starlette test client and do not represent test failures.
+The warnings are dependency deprecation warnings and are not test failures.
 
----
-
-# Frontend Production Build
-
-The production build has also been verified successfully.
-
-Run:
+The frontend production build was also verified:
 
 ```bash
 npm run build
 ```
 
-Current result:
+Result:
 
 ```text
 ✓ Compiled successfully
@@ -878,393 +451,132 @@ Current result:
 
 ---
 
-# Evaluation Scenarios
+## Evaluation Scenarios
 
-The application was evaluated against the following scenarios.
-
-| #  | Scenario                                                 | Expected Behavior                                     |
-| -- | --------------------------------------------------------- | ------------------------------------------------------- |
-| 1  | Ask for check-in time                                    | Returns the hotel's check-in time                      |
-| 2  | Ask about hotel amenities                                | Retrieves information from the hotel knowledge base    |
-| 3  | Ask whether breakfast is included in a specific room     | Uses room-specific information                         |
-| 4  | Ask which room supports 3 guests                         | Returns suitable rooms                                 |
-| 5  | Check availability for valid dates and guests            | Calls the availability tool and returns room cards     |
-| 6  | Ask a follow-up question about availability              | Uses conversation context                              |
-| 7  | Request availability outside the mock calendar           | Clearly states that availability data is unavailable   |
-| 8  | Ask about information not present in the knowledge base  | Does not invent an answer                               |
-| 9  | Submit an invalid or incomplete availability request     | Handles missing/invalid information                    |
-| 10 | Backend/API dependency failure                           | Displays a useful frontend error state                 |
+| # | Scenario | Expected Behavior |
+|---|---|---|
+| 1 | Ask for check-in time | Returns hotel check-in time |
+| 2 | Ask about amenities | Retrieves hotel knowledge |
+| 3 | Ask about room breakfast | Uses room-specific information |
+| 4 | Ask which room supports 3 guests | Returns suitable rooms |
+| 5 | Check availability | Uses deterministic availability tool |
+| 6 | Ask a follow-up | Uses conversation context |
+| 7 | Outside mock calendar | States availability data is unavailable |
+| 8 | Unknown hotel information | Does not invent an answer |
+| 9 | Missing/invalid availability information | Requests or validates required information |
+| 10 | Backend/API failure | Shows useful frontend error state |
 
 ---
 
-# Product and UX Decisions
+## Product and Engineering Decisions
 
-## Why a conversational interface?
+### Why conversational UI?
 
-Hotel guests naturally ask questions using normal language.
+Guests naturally ask questions in normal language. Chat reduces the need to navigate through multiple hotel pages.
 
-For example:
+### Why structured availability cards?
 
-```text
-Do you have anything for three people with breakfast?
-```
+Guests can quickly scan room name, capacity, beds, price, and breakfast inclusion instead of interpreting a long paragraph.
 
-A conversational interface lets the guest express their request naturally without requiring them to navigate through multiple pages.
+### Why JSON instead of a database?
 
----
+The assignment has a small structured knowledge base. JSON is simple to inspect, modify, test, and deploy.
 
-## Why suggested questions?
+### Why not RAG?
 
-Suggested questions help new users understand what the assistant can do and provide immediate entry points into the conversation.
+The knowledge base is small and structured. Embeddings and a vector database would add complexity without significant value for this scope.
 
-Examples include:
+### Why keep availability outside the LLM?
 
-```text
-What time is check-in?
-
-What amenities does the hotel have?
-
-Is breakfast included in the Deluxe Room?
-
-Do you have rooms for 3 guests?
-```
+Availability is business-critical and deterministic. Python performs the inventory calculation, making behavior predictable and testable.
 
 ---
 
-## Why structured availability cards?
+## Measuring Usefulness
 
-Availability is more useful when guests can quickly scan:
+For a real deployment, useful metrics could include:
 
-- Room name
-- Maximum guests
-- Beds
-- Price
-- Breakfast inclusion
-
-Instead of relying on plain conversational text, the frontend receives structured availability data and renders it as room cards.
-
----
-
-# Engineering Decisions
-
-## Why JSON instead of a database?
-
-The assignment requires only a small hotel knowledge base.
-
-JSON provides a simple and maintainable solution for this scope.
-
-It is:
-
-- Easy to inspect
-- Easy to modify
-- Easy to test
-- Easy to deploy
-
-A production implementation could replace these files with a database or hotel/property management system.
-
----
-
-## Why not use RAG?
-
-The hotel knowledge base is small and structured.
-
-Introducing embeddings, a vector database, and a retrieval pipeline would add complexity without providing significant value for this application.
-
-Deterministic JSON retrieval is sufficient for the current scope.
-
----
-
-## Why keep availability outside the LLM?
-
-Availability is a business-critical deterministic operation.
-
-The LLM can understand:
-
-```text
-Do you have anything for three people from October 10th to 12th?
-```
-
-but it should not decide whether a room is available.
-
-Python performs the actual inventory check.
-
-This makes the system more predictable and easier to test.
-
----
-
-# AI Design
-
-The application separates AI responsibilities from deterministic responsibilities.
-
-## LLM Responsibilities
-
-```text
-Natural-language understanding
-        ↓
-Intent identification
-        ↓
-Tool selection
-        ↓
-Natural-language response generation
-```
-
-## Python Responsibilities
-
-```text
-Data retrieval
-        ↓
-Validation
-        ↓
-Room suitability
-        ↓
-Availability calculation
-        ↓
-Structured response
-```
-
-This separation reduces the risk of the model making unsupported business decisions.
-
----
-
-# How the System Handles Unsupported Questions
-
-If the user asks something that is not present in the hotel knowledge base, the assistant does not invent an answer.
-
-For example:
-
-```text
-Does Sunrise Hotel have helicopter transportation?
-```
-
-If this information is not present in the data, the assistant should communicate that it does not have information about the service.
-
-This is preferable to making an unsupported claim.
-
----
-
-# Measuring Usefulness
-
-If this assistant were deployed in a real hotel environment, useful metrics could include:
-
-- Percentage of questions answered successfully
+- Successful question-answer rate
 - Availability lookup completion rate
 - Fallback rate
 - AI/model failure rate
-- Average response latency
-- Number of conversations requiring human assistance
-- Guest satisfaction feedback
-- Frequency of repeated questions
-- Percentage of availability requests successfully completed
-
-These metrics could be used to determine whether the assistant actually reduces guest effort.
+- Response latency
+- Human-assistance rate
+- Guest satisfaction
+- Repeated-question frequency
 
 ---
 
-# Production Improvements
+## Production Improvements
 
-Before using this system in a real hotel environment, I would consider:
+Before real hotel deployment, I would consider:
 
-### Real Availability Integration
+- Real hotel/property management integration
+- Booking and cancellation workflow
+- Structured logging, metrics, and tracing
+- API rate limiting
+- Automated AI evaluation for factual accuracy and tool selection
+- Multilingual support
+- Human-agent handoff
 
-Replace the mock JSON availability data with a real hotel/property management system.
-
-### Booking Flow
-
-Allow guests to proceed from availability results into a booking flow with explicit confirmation.
-
-### Authentication
-
-Add authentication for hotel staff and administrative functionality.
-
-### Monitoring
-
-Add structured logs, metrics, tracing, and monitoring for API and model failures.
-
-### Rate Limiting
-
-Protect the API from abuse and excessive model usage.
-
-### Improved AI Evaluation
-
-Add automated evaluation for:
-
-- Factual accuracy
-- Tool selection
-- Hallucination rate
-- Unsupported answers
-- Follow-up understanding
-
-### Multilingual Support
-
-Hotels serve international guests, so multilingual support could improve accessibility.
-
-### Human Handoff
-
-Provide a mechanism for escalating complex requests to hotel staff.
+These were intentionally kept outside the assignment scope to keep the implementation focused and maintainable.
 
 ---
 
-# Deployment
+## Deployment
 
-## Frontend
-
-The frontend is deployed using Vercel.
-
-Live application:
+### Frontend
 
 https://sunrise-hotel-co65.vercel.app/
 
-## Backend
-
-The backend is deployed separately as a FastAPI service.
-
-Backend URL:
+### Backend
 
 https://sunrise-hotel-ten.vercel.app/
 
-The frontend uses:
-
-```text
-NEXT_PUBLIC_API_URL
-```
-
-to communicate with the deployed backend.
+The frontend uses `NEXT_PUBLIC_API_URL` to communicate with the backend. On startup it calls `GET /health` before enabling chat, which also helps when the backend has temporarily gone idle.
 
 ---
 
-# Startup Health Check
-
-When the application loads, the frontend automatically calls:
-
-```http
-GET /health
-```
-
-The purpose is to:
-
-1. Check whether the backend is reachable.
-2. Wake the backend if the hosting provider has put it into an idle state.
-3. Prevent users from sending chat requests before the backend is ready.
-4. Provide a clear connection state to the user.
-
-The flow is:
-
-```text
-Open application
-       ↓
-Connecting to Sunrise Hotel Assistant...
-       ↓
-GET /health
-       ↓
-Backend available
-       ↓
-Chat enabled
-```
-
-If the backend cannot be reached:
-
-```text
-Unable to connect to the hotel assistant.
-Please try again.
-```
-
----
-
-# Security
+## Security
 
 The Groq API key is never exposed to the frontend.
 
-The architecture is:
-
 ```text
-Browser
-   │
-   │ No Groq API key
-   ▼
-Next.js
-   │
-   ▼
-FastAPI
-   │
-   │ GROQ_API_KEY
-   ▼
-Groq API
+Browser → Next.js → FastAPI → Groq API
 ```
 
-Environment files containing secrets are excluded from Git.
-
-Only `.env.example` files are committed to the repository.
+The API key exists only in the backend environment.
 
 ---
 
-# AI Tools Used During Development
+## AI Tools Used During Development
 
-AI-assisted development tools were used during implementation for:
-
-- Architecture planning
-- Code generation
-- Debugging
-- Test scenario design
-- UI refinement
-- Error analysis
-- Documentation assistance
-
-Important technical and product decisions were reviewed and validated through implementation, testing, and production builds.
+AI-assisted development tools were used for architecture planning, code generation, debugging, test scenario design, UI refinement, error analysis, and documentation assistance. Technical and product decisions were validated through implementation, testing, and production builds.
 
 ---
 
-# Final Validation
+## Final Validation
 
-Backend tests:
+- **Backend:** 19 tests passed
+- **Frontend:** Production build successful
+- Hotel information tested
+- Room information tested
+- Room suitability tested
+- Availability tested
+- Follow-up questions tested
+- Unsupported information tested
+- Loading and backend connection states tested
+- API error handling tested
+- Responsive layout tested
 
-```text
-19 passed
-2 warnings
-```
+## Future Scope
 
-Frontend production build:
+Possible future additions include real inventory integration, booking/cancellation, staff dashboard, guest authentication, multilingual conversations, human-agent handoff, monitoring, and persistent conversation history.
 
-```text
-✓ Compiled successfully
-✓ Finished TypeScript
-✓ Generating static pages
-```
-
-The application has been tested across:
-
-- Hotel information questions
-- Room information
-- Room suitability
-- Availability
-- Follow-up questions
-- Unsupported information
-- Loading states
-- Backend connection states
-- API error handling
-- Responsive layouts
+The current implementation intentionally focuses on a practical and maintainable hotel assistant rather than adding unnecessary infrastructure.
 
 ---
 
-# Future Scope
-
-Potential future additions include:
-
-- Real hotel inventory integration
-- Real booking and cancellation workflows
-- Payment integration
-- Staff dashboard
-- Guest authentication
-- Multilingual conversations
-- Voice interaction
-- Human agent handoff
-- Production monitoring
-- Advanced AI evaluation
-- Persistent conversation history
-
-These features were intentionally kept outside the current implementation to maintain a focused and maintainable assignment scope.
-
----
-
-# License
+## License
 
 This project was created as a take-home assignment and demonstration project.
